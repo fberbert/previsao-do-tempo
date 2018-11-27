@@ -4,15 +4,20 @@ Autor: Fábio Berbert de Paula <fberbert@gmail.com>
 Data : 27/11/2018
 """
 
-def previsao():
+def previsao(local=''):
     #pip install requests-html
     from requests_html import HTMLSession
     import re
 
     session = HTMLSession()
 
+    url = 'https://www.google.com.br/search?q=previsao+do+tempo&oq=previsao+do+tempo&ie=UTF-8'
+    if local != '':
+        local = local.replace(' ', '+')
+        url = url.replace('tempo', 'tempo+' + local)
+
     #URL resultado da busca no Google por: previsao do tempo
-    r = session.get('https://www.google.com.br/search?q=previsao+do+tempo&oq=previsao+do+tempo&ie=UTF-8')
+    r = session.get(url)
 
     #abaixo defino os seletores CSS de cada elemento da pagina
     #e armazeno nas devidas variaveis
@@ -36,4 +41,12 @@ def previsao():
 
     return("%s\n%s\t%s°C (%s)\n\n%s" %(city, date, temp, state, dtl))
 
-print(previsao())
+#leitura da localidade (parâmetro via linha de comando)
+import sys
+
+local=''
+if len(sys.argv)>0:
+    sys.argv.pop(0)
+    local = ' '.join(sys.argv)
+
+print(previsao(local))
